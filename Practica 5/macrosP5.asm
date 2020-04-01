@@ -762,3 +762,74 @@ NoDX:
 	print NoExisteFX
 FinPrintDX:
 endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%% IMPRIMIR INTEGRAL F(x) %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+PrintIntX macro
+LOCAL NoIntX, FinIntX
+mov cx,BanderaFX
+cmp cx,0
+je NoIntX
+print Fint
+print pA
+mov ax, Coeficientex4
+ConvertirString NumeroAux
+print NumeroAux
+print sigDiv
+print Num5
+print x5
+print pC
+print espacio
+print sigMas
+print espacio
+print pA
+mov ax, Coeficientex3
+ConvertirString NumeroAux
+print NumeroAux
+print sigDiv
+print Num4
+print x4
+print pC
+print espacio
+print sigMas
+print espacio
+print pA
+mov ax, Coeficientex2
+ConvertirString NumeroAux
+print NumeroAux
+print sigDiv
+print Num3
+print x3
+print pC
+print espacio
+print sigMas
+print espacio
+print pA
+mov ax, Coeficientex1
+ConvertirString NumeroAux
+print NumeroAux
+print sigDiv
+print Num2
+print x2
+print pC
+print espacio
+print sigMas
+print espacio
+print pA
+mov ax, Coeficientex0
+ConvertirString NumeroAux
+print NumeroAux
+print x1
+print pC
+print espacio
+print sigMas
+print espacio
+print ConstC
+print salto
+jmp FinIntX
+NoIntX:
+	print NoExisteFX
+FinIntX:
+endm

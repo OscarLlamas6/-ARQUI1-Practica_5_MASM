@@ -81,14 +81,23 @@ SiExisteFX db "  Si ha ingresado funcion f(x).",0ah,0dh,"$"
 asignacion_titulo db "++++++++++++ ASIGNACION DE COEFICIENTES ++++++++++++",0ah,0dh,"$"
 fx_titulo db "++++++++++++ Funcion original f(x) ++++++++++++",0ah,0dh,"$"
 dx_titulo db "++++++++++++ Derivada f'(x) ++++++++++++",0ah,0dh,"$"
+int_titulo db "++++++++++++ Integral F(x) ++++++++++++",0ah,0dh,"$"
 Cx0 db "    - Coeficiente de x0: ","$"
 Cx1 db "    - Coeficiente de x1: ","$"
 Cx2 db "    - Coeficiente de x2: ","$"
 Cx3 db "    - Coeficiente de x3: ","$"
 Cx4 db "    - Coeficiente de x4: ","$"
-fx db "   f(x) =  ","$"
-fprima db "   f'(x) =  ","$"
+fx db "  f(x) =  ","$"
+fprima db "  f'(x) =  ","$"
+Fint db "  F(x) =  ","$"
+ConstC db "C","$"
 sigMas db "+","$"
+sigDiv db "/","$"
+Num5 db "5","$"
+Num4 db "4","$"
+Num3 db "3","$"
+Num2 db "2","$"
+x5 db "*x^5","$"
 x4 db "*x^4","$"
 x3 db "*x^3","$"
 x2 db "*x^2","$"
@@ -185,7 +194,14 @@ OPCION3:
 	jmp Inicio
 
 OPCION4:	   
-	jmp salir
+	Clear_Screen
+    print int_titulo
+    print salto
+    PrintIntX
+    print salto
+    print PresioneContinuar
+    getCharSE
+	jmp Inicio
 
 OPCION5:	   
 	jmp salir
