@@ -11,28 +11,6 @@ endm
 
 
 ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-;%%%%%%%%%%%%%%%%% CONVERTIR A ASCII PARA ESCRIBIR EN ARCHIVO %%%%%%%%%%%%%%%%%%
-;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-DecToAscii macro NumeroDec
-    push ax     
-    mov ax,NumeroDec
-    call ConvertirNum
-    pop ax
-endm
-
-;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-;%%%%%%%%%%%%%%%%%%%%%%% CONVERTIR A ASCII PARA IMPRIMIR %%%%%%%%%%%%%%%%%%%%%%%
-;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-DecToPrint macro NumeroDTA
-    push ax     
-    mov ax,NumeroDTA
-    call ConvertirPrint
-    pop ax
-endm
-
-;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ;%%%%%%%%%%%%%%%%%%%%%%%%%    OBTENER FECHA Y HORA     %%%%%%%%%%%%%%%%%%%%%%%%%
 ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ObtenerFechaHora macro bufferFecha
@@ -687,7 +665,6 @@ print salto
 jmp FinPrintFX
 NoFX:
 	print NoExisteFX
-	jmp FinPrintFX
 FinPrintFX:
 endm
 
@@ -833,3 +810,261 @@ NoIntX:
 	print NoExisteFX
 FinIntX:
 endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Separar Fecha %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+SepararFecha macro
+LOCAL LlenarFecha, SalirSepararFecha
+xor si,si
+mov cx,0ah
+LlenarFecha:
+mov al,bufferFechaHora[si]
+mov bufferDate[si],al
+inc si
+cmp si,cx
+jb LlenarFecha
+SalirSepararFecha:
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Separar Hora %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+SepararHora macro
+LOCAL LlenarHora, SalirSepararHora
+mov si,0ah
+xor di,di
+mov cx,0fh
+LlenarHora:
+mov al,bufferFechaHora[si]
+mov bufferHour[di],al
+inc si
+inc di
+cmp si,cx
+jb LlenarHora
+SalirSepararHora:
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%% OBTENER TAMAÑO DE UN STRING %%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+getSize macro buffer, Char, NoBytes
+LOCAL Comparar, Aumentar, FinGetSize
+xor si,si
+Comparar:
+cmp buffer[si],Char
+jne Aumentar
+jmp FinGetSize
+
+Aumentar:
+inc si
+cmp si,NoBytes
+jb Comparar
+
+
+FinGetSize:
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GENERAR REPORTE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+GenerarReporte macro
+LOCAL NoReporte, FinReporte
+mov cx,BanderaFX
+cmp cx,0
+je NoReporte
+CrearArchivo bufferReporte, handlerReporte	
+ObtenerFechaHora bufferFechaHora
+EscribirArchivo handlerReporte, EncabezadoReporte, SIZEOF EncabezadoReporte
+EscribirArchivo handlerReporte, TReporte, SIZEOF TReporte
+EscribirArchivo handlerReporte, TFecha, SIZEOF TFecha
+SepararFecha
+EscribirArchivo handlerReporte, bufferDate, SIZEOF bufferDate
+EscribirArchivo handlerReporte, RSalto, SIZEOF RSalto
+EscribirArchivo handlerReporte, THora, SIZEOF THora
+SepararHora
+EscribirArchivo handlerReporte, bufferHour, SIZEOF bufferHour
+EscribirArchivo handlerReporte, RSalto, SIZEOF RSalto
+EscribirArchivo handlerReporte, RSalto, SIZEOF RSalto
+;-------------------- FUNCION ORIGINAL -------------------------
+EscribirArchivo handlerReporte, TOriginal, SIZEOF TOriginal
+EscribirArchivo handlerReporte, Rfx, SIZEOF Rfx
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, Coeficientex4
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, Rx4, SIZEOF Rx4
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, Coeficientex3
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, Rx3, SIZEOF Rx3
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, Coeficientex2
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, Rx2, SIZEOF Rx2
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, Coeficientex1
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, Rx1, SIZEOF Rx1
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, Coeficientex0
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, RSalto, SIZEOF RSalto
+EscribirArchivo handlerReporte, RSalto, SIZEOF RSalto
+;--------------------- FUNCION DERIVADA ---------------------
+EscribirArchivo handlerReporte, TDerivada, SIZEOF TDerivada
+CalcularDX
+EscribirArchivo handlerReporte, Rfprima, SIZEOF Rfprima
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, CoeficienteDx3
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, Rx3, SIZEOF Rx3
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, CoeficienteDx2
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, Rx2, SIZEOF Rx2
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, CoeficienteDx1
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, Rx1, SIZEOF Rx1
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, CoeficienteDx0
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, RSalto, SIZEOF RSalto
+EscribirArchivo handlerReporte, RSalto, SIZEOF RSalto
+;---------------------- FUNCION INTEGRAL -------------------
+EscribirArchivo handlerReporte, TIntegral, SIZEOF TIntegral
+EscribirArchivo handlerReporte, RFint, SIZEOF RFint
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, Coeficientex4
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, RsigDiv, SIZEOF RsigDiv
+EscribirArchivo handlerReporte, RNum5, SIZEOF RNum5
+EscribirArchivo handlerReporte, Rx5, SIZEOF Rx5
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, Coeficientex3
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, RsigDiv, SIZEOF RsigDiv
+EscribirArchivo handlerReporte, RNum4, SIZEOF RNum4
+EscribirArchivo handlerReporte, Rx4, SIZEOF Rx4
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, Coeficientex2
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, RsigDiv, SIZEOF RsigDiv
+EscribirArchivo handlerReporte, RNum3, SIZEOF RNum3
+EscribirArchivo handlerReporte, Rx3, SIZEOF Rx3
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, Coeficientex1
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, RsigDiv, SIZEOF RsigDiv
+EscribirArchivo handlerReporte, RNum2, SIZEOF RNum2
+EscribirArchivo handlerReporte, Rx2, SIZEOF Rx2
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RpA, SIZEOF RpA
+mov ax, Coeficientex0
+ConvertirString Num
+getSize Num, 24h, SIZEOF Num
+mov NBytes, si
+EscribirArchivo handlerReporte, Num, NBytes
+EscribirArchivo handlerReporte, Rx1, SIZEOF Rx1
+EscribirArchivo handlerReporte, RpC, SIZEOF RpC
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RsigMas, SIZEOF RsigMas
+EscribirArchivo handlerReporte, Respacio, SIZEOF Respacio
+EscribirArchivo handlerReporte, RConstC, SIZEOF RConstC
+CerrarArchivo handlerReporte
+print ReporteGenerado
+jmp FinReporte
+NoReporte:
+	print NoExisteFX
+FinReporte:
+endm
+
+

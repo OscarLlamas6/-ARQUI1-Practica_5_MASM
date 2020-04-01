@@ -11,7 +11,51 @@ include macrosP5.asm	;Archivo con los macros a utilizar
 .data
 ;-----------------------------------------------------------------
 
+;********************* LINEAS PARA EL REPORTE **************************
 
+EncabezadoReporte db "UNIVERSIDAD DE SAN CARLOS DE GUATEMALA",13,10,
+                    "FACULTAD DE INGENIERIA",13,10,
+                    "ESCUELA DE CIENCIAS Y SISTEMAS",13,10,
+                    "ARQUITECTURA DE COMPUTADORES Y ENSAMBLADORES 1 A",13,10,
+                    "PRIMER SEMESTRE 2020",13,10,
+                    "OSCAR ALFREDO LLAMAS LEMUS",13,10,
+                    "201602625",13,10,13,10
+
+TReporte db "REPORTE PRACTICA No.5",13,10,13,10 
+TOriginal db "Funcion Original",13,10
+TDerivada db "Funcion Derivada",13,10 
+TIntegral db "Funcion Integral",13,10             
+TFecha db "Fecha: "
+THora db "Hora: "
+RSalto db " ",13,10
+Rfx db " f(x) =  "
+Rfprima db " f'(x) =  "
+RFint db " F(x) =  "
+RConstC db "C"
+RsigMas db "+"
+RsigDiv db "/"
+RNum5 db "5"
+RNum4 db "4"
+RNum3 db "3"
+RNum2 db "2"
+Rx5 db "*x^5"
+Rx4 db "*x^4"
+Rx3 db "*x^3"
+Rx2 db "*x^2"
+Rx1 db "*x"
+RpA db "("
+RpC db ")"
+Respacio db "  "
+
+;**************************************************************************
+bufferEntrada db 50 dup('$'),00
+handlerEntrada dw ?
+bufferReporte db "Reporte.txt",00h
+handlerReporte dw ?
+bufferInformacion db 100 dup('$')
+bufferFechaHora db 15 dup('$')
+bufferDate db 10 dup('$')
+bufferHour db 5 dup('$')
 CoeficienteDx0 WORD 0;
 CoeficienteDx1 WORD 0;
 CoeficienteDx2 WORD 0;
@@ -23,11 +67,12 @@ Coeficientex2 WORD 0;
 Coeficientex3 WORD 0;
 Coeficientex4 WORD 0;
 BanderaFX WORD 0;
+NBytes WORD 0;
 PasoAsignacion WORD 0;
 Numero1 db 100 dup('$')
 Numero2 db 100 dup('$')
 Resultado db 100 dup('$')
-Num db 100 dup(00h)
+Num db 50 dup(00h)
 NumPrint db 100 dup('$')
 Cin db 3 dup('$')
 varCero db 30h,"$$"
@@ -78,10 +123,12 @@ asigTerminada db "  Asignacion de coeficientes terminada. Presione cualquier tec
 PresioneContinuar db "  Presione cualquier tecla para continuar.","$"
 NoExisteFX db "  No se ha ingresado ninguna funcion f(x).",0ah,0dh,"$"
 SiExisteFX db "  Si ha ingresado funcion f(x).",0ah,0dh,"$"
+ReporteGenerado db "    Reporte generado con exito!",0ah,0dh,"$"
 asignacion_titulo db "++++++++++++ ASIGNACION DE COEFICIENTES ++++++++++++",0ah,0dh,"$"
 fx_titulo db "++++++++++++ Funcion original f(x) ++++++++++++",0ah,0dh,"$"
 dx_titulo db "++++++++++++ Derivada f'(x) ++++++++++++",0ah,0dh,"$"
 int_titulo db "++++++++++++ Integral F(x) ++++++++++++",0ah,0dh,"$"
+rep_titulo db "++++++++++++ GENERAR REPORTE ++++++++++++",0ah,0dh,"$"
 Cx0 db "    - Coeficiente de x0: ","$"
 Cx1 db "    - Coeficiente de x1: ","$"
 Cx2 db "    - Coeficiente de x2: ","$"
@@ -207,7 +254,14 @@ OPCION5:
 	jmp salir
 
 OPCION6:	   
-	jmp salir
+	Clear_Screen
+    print rep_titulo
+    print salto
+    GenerarReporte
+    print salto
+    print PresioneContinuar
+    getCharSE
+	jmp Inicio
 
 OPCION7:	   
 	jmp salir
@@ -254,92 +308,6 @@ salir:
 	int 21h 				
 
 main endp 	
-
-ConvertirNum proc
-            push bp                    ;almacenamos el puntero base
-            mov  bp,sp                 ;ebp contiene la direccion de esp
-            sub  sp,2                  ;se guarda espacio para dos variables
-            mov word ptr[bp-2],0       ;var local =0 
-            pusha
-            LimpiarBuffer Num, SIZEOF Num, 00h
-            xor si,si                          ;si=0
-            cmp ax,0                           ;si ax, ya viene con un cero
-            je casoMinimo           
-            mov  bx,0                          ;denota el fin de la cadena
-            push bx                            ;se pone en la pila el fin de cadena
-            Bucle:  
-                mov dx,0
-                cmp ax,0                    ;¿AX= 0?
-                je toNum                    ;si:enviar numero al arreglo                
-                mov bx,10                   ;divisor  = 10
-                div bx                      ;ax =cociente ,dx= residuo
-                add dx,48d                   ;residuo +48 para  poner el numero en ascii
-                push dx                     ;lo metemos en la pila 
-                jmp Bucle
-            toNum:
-                pop bx                      ;obtenemos elemento de la pila
-                mov word ptr[bp-2],bx       ; pasamos de 16 bits a 8 bits 
-                mov al, byte ptr[bp-2]
-                cmp al,0                    ;¿Fin de Numero?
-                je FIN                      ;si: enviar al fin del procedimiento
-                mov num[si],al              ;ponemos el numero en ascii en la cadena
-                inc si                      ;incrementamos los valores               
-                jmp toNum                   ;iteramos de nuevo            
-            casoMinimo:
-                add al,48d                         ;convertimos 0 ascii
-                mov Num[si],al                     ;Lo pasamos a num
-                jmp FIN
-            FIN:
-                popa
-                mov sp,bp               ;esp vuelve apuntar al inicio y elimina las variables locales
-                pop bp                  ;restaura el valor del puntro base listo para el ret
-                ret 
-            ConvertirNum endp
-
-
-
-ConvertirPrint proc
-            push bp                   
-            mov  bp,sp                
-            sub  sp,2                 
-            mov word ptr[bp-2],0      
-            pusha
-            LimpiarBuffer NumPrint, SIZEOF NumPrint, 24h
-            xor si,si                        
-            cmp ax,0                        
-            je casoMinimo2         
-            mov  bx,0                       
-            push bx                          
-            Bucle2:  
-                mov dx,0
-                cmp ax,0                   
-                je toNum2                                
-                mov bx,10               
-                div bx                    
-                add dx,48d                
-                push dx                    
-                jmp Bucle2
-            toNum2:
-                pop bx                   
-                mov word ptr[bp-2],bx    
-                mov al, byte ptr[bp-2]
-                cmp al,0                   
-                je FIN2                  
-                mov NumPrint[si],al          
-                inc si                            
-                jmp toNum2                 
-            casoMinimo2:
-                add al,48d                     
-                mov NumPrint[si],al                
-                jmp FIN2
-            FIN2:
-                popa
-                mov sp,bp           
-                pop bp                
-                ret 
-    ConvertirPrint endp
-
-	
 
 
 end main
