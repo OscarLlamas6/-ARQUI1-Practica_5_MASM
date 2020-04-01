@@ -374,6 +374,7 @@ endm
 
 ConvertirString macro buffer
 LOCAL Dividir,Dividir2,FinCr3,NEGATIVO,FIN
+LimpiarBuffer buffer, SIZEOF buffer, 24h
 xor si,si
 xor cx,cx
 xor bx,bx
@@ -629,4 +630,63 @@ cmp cx,4
 je Asignarx1
 cmp cx,5
 je Asignarx0
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%% IMPRIMIR FUNCION ORIGINAL %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+PrintFX macro
+LOCAL NoFX, FinPrintFX
+mov cx,BanderaFX
+cmp cx,0
+je NoFX
+print fx
+print pA
+mov ax, Coeficientex4
+ConvertirString NumeroAux
+print NumeroAux
+print x4
+print pC
+print espacio
+print sigMas
+print espacio
+print pA
+mov ax, Coeficientex3
+ConvertirString NumeroAux
+print NumeroAux
+print x3
+print pC
+print espacio
+print sigMas
+print espacio
+print pA
+mov ax, Coeficientex2
+ConvertirString NumeroAux
+print NumeroAux
+print x2
+print pC
+print espacio
+print sigMas
+print espacio
+print pA
+mov ax, Coeficientex1
+ConvertirString NumeroAux
+print NumeroAux
+print x1
+print pC
+print espacio
+print sigMas
+print espacio
+print pA
+mov ax, Coeficientex0
+ConvertirString NumeroAux
+print NumeroAux
+print pC
+print salto
+jmp FinPrintFX
+NoFX:
+	print NoExisteFX
+	jmp FinPrintFX
+FinPrintFX:
 endm

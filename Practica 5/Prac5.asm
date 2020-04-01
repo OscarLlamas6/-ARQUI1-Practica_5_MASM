@@ -11,27 +11,7 @@ include macrosP5.asm	;Archivo con los macros a utilizar
 .data
 ;-----------------------------------------------------------------
 
-t0 db "Es 0","$"
-t1 db "Es 1","$"
-t2 db "Es 2","$"
-t3 db "Es 3","$"
-t4 db "Es 4","$"
-t5 db "Es 5","$"
-t6 db "Es 6","$"
-t7 db "Es 7","$"
-t8 db "Es 8","$"
-t9 db "Es 9","$"
-t1n db "Es 1 neg","$"
-t2n db "Es 2 neg","$"
-t3n db "Es 3 neg","$"
-t4n db "Es 4 neg","$"
-t5n db "Es 5 neg","$"
-t6n db "Es 6 neg","$"
-t7n db "Es 7 neg","$"
-t8n db "Es 8 neg","$"
-t9n db "Es 9 neg","$"
-
-
+NumeroAux db 100 dup('$')
 Coeficientex0 WORD 0;
 Coeficientex1 WORD 0;
 Coeficientex2 WORD 0;
@@ -90,17 +70,28 @@ menu db "	1) Ingresar funcion f(x)",0ah,0dh,"	2) Funcion en memoria",0ah,0dh,"	3
 				"	7) Modo Calculadora",0ah,0dh,"	8) Salir",0ah,0dh,"$"
 elegir db "Elija una opcion:","$"
 asigTerminada db "  Asignacion de coeficientes terminada. Presione cualquier tecla para continuar.","$"
+PresioneContinuar db "  Presione cualquier tecla para continuar.","$"
+NoExisteFX db "  No se ha ingresado ninguna funcion f(x).",0ah,0dh,"$"
 asignacion_titulo db "++++++++++++ ASIGNACION DE COEFICIENTES ++++++++++++",0ah,0dh,"$"
+fx_titulo db "++++++++++++ Funcion original f(x) ++++++++++++",0ah,0dh,"$"
 Cx0 db "    - Coeficiente de x0: ","$"
 Cx1 db "    - Coeficiente de x1: ","$"
 Cx2 db "    - Coeficiente de x2: ","$"
 Cx3 db "    - Coeficiente de x3: ","$"
 Cx4 db "    - Coeficiente de x4: ","$"
+fx db "   f(x) =  ","$"
+sigMas db "+","$"
+x4 db "*x^4","$"
+x3 db "*x^3","$"
+x2 db "*x^2","$"
+x1 db "*x","$"
+pA db "(","$"
+pC db ")","$"
+espacio db "  ","$"
 ;********************** SEGMENTO DE CODIGO *********************** 
 .code
 
-main proc
-
+main proc 
 mov dx,@data
 mov ds,dx
 
@@ -138,6 +129,7 @@ OPCION1:
     Clear_Screen
     print asignacion_titulo
     print salto
+    mov BanderaFX,0
     mov PasoAsignacion,1
     print Cx4
     Asignarx4:
@@ -158,13 +150,24 @@ OPCION1:
     print Cx0
     Asignarx0:
     AsignarCoeficiente Coeficientex0
+    mov BanderaFX,1
     print salto
     print asigTerminada
     getCharSE
 	jmp Inicio
-	
-OPCION2:  
-	jmp salir
+
+
+
+
+OPCION2:
+    Clear_Screen
+    print fx_titulo
+    print salto
+    PrintFX
+    print salto
+    print PresioneContinuar
+    getCharSE
+	jmp Inicio
         
 OPCION3:	   
 	jmp salir
