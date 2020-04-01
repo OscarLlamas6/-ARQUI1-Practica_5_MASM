@@ -11,6 +11,11 @@ include macrosP5.asm	;Archivo con los macros a utilizar
 .data
 ;-----------------------------------------------------------------
 
+
+CoeficienteDx0 WORD 0;
+CoeficienteDx1 WORD 0;
+CoeficienteDx2 WORD 0;
+CoeficienteDx3 WORD 0;
 NumeroAux db 100 dup('$')
 Coeficientex0 WORD 0;
 Coeficientex1 WORD 0;
@@ -72,14 +77,17 @@ elegir db "Elija una opcion:","$"
 asigTerminada db "  Asignacion de coeficientes terminada. Presione cualquier tecla para continuar.","$"
 PresioneContinuar db "  Presione cualquier tecla para continuar.","$"
 NoExisteFX db "  No se ha ingresado ninguna funcion f(x).",0ah,0dh,"$"
+SiExisteFX db "  Si ha ingresado funcion f(x).",0ah,0dh,"$"
 asignacion_titulo db "++++++++++++ ASIGNACION DE COEFICIENTES ++++++++++++",0ah,0dh,"$"
 fx_titulo db "++++++++++++ Funcion original f(x) ++++++++++++",0ah,0dh,"$"
+dx_titulo db "++++++++++++ Derivada f'(x) ++++++++++++",0ah,0dh,"$"
 Cx0 db "    - Coeficiente de x0: ","$"
 Cx1 db "    - Coeficiente de x1: ","$"
 Cx2 db "    - Coeficiente de x2: ","$"
 Cx3 db "    - Coeficiente de x3: ","$"
 Cx4 db "    - Coeficiente de x4: ","$"
 fx db "   f(x) =  ","$"
+fprima db "   f'(x) =  ","$"
 sigMas db "+","$"
 x4 db "*x^4","$"
 x3 db "*x^3","$"
@@ -156,9 +164,6 @@ OPCION1:
     getCharSE
 	jmp Inicio
 
-
-
-
 OPCION2:
     Clear_Screen
     print fx_titulo
@@ -169,8 +174,15 @@ OPCION2:
     getCharSE
 	jmp Inicio
         
-OPCION3:	   
-	jmp salir
+OPCION3:
+    Clear_Screen
+    print dx_titulo
+    print salto    
+    PrintDX
+    print salto
+    print PresioneContinuar
+    getCharSE	   
+	jmp Inicio
 
 OPCION4:	   
 	jmp salir

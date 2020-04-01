@@ -690,3 +690,75 @@ NoFX:
 	jmp FinPrintFX
 FinPrintFX:
 endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% CALCULAR f'(x) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+CalcularDX macro
+mov ax,Coeficientex4
+mov bx,4
+mul bx
+mov CoeficienteDx3,ax
+mov ax,Coeficientex3
+mov bx,3
+mul bx
+mov CoeficienteDx2,ax
+mov ax,Coeficientex2
+mov bx,2
+mul bx
+mov CoeficienteDx1,ax
+mov ax,Coeficientex1
+mov CoeficienteDx0,ax
+endm
+
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%% IMPRIMIR DERIVADA f'(x) %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+PrintDX macro
+LOCAL NoDX, FinPrintDX
+mov cx,BanderaFX
+cmp cx,0
+je NoDX
+CalcularDX
+print fprima
+print pA
+mov ax, CoeficienteDx3
+ConvertirString NumeroAux
+print NumeroAux
+print x3
+print pC
+print espacio
+print sigMas
+print espacio
+print pA
+mov ax, CoeficienteDx2
+ConvertirString NumeroAux
+print NumeroAux
+print x2
+print pC
+print espacio
+print sigMas
+print espacio
+print pA
+mov ax,CoeficienteDx1
+ConvertirString NumeroAux
+print NumeroAux
+print x1
+print pC
+print espacio
+print sigMas
+print espacio
+print pA
+mov ax, CoeficienteDx0
+ConvertirString NumeroAux
+print NumeroAux
+print pC
+print salto
+jmp FinPrintDX
+NoDX:
+	print NoExisteFX
+FinPrintDX:
+endm
