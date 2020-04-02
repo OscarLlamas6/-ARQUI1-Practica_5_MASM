@@ -49,6 +49,8 @@ Respacio db "  "
 
 ;**************************************************************************
 bufferEntrada db 50 dup('$'),00
+bufferAuxiliar db 50 dup('$'),00
+bufferAuxiliar2 db 50 dup('$'),00
 handlerEntrada dw ?
 bufferReporte db "Reporte.txt",00h
 handlerReporte dw ?
@@ -132,7 +134,9 @@ menu db "	1) Ingresar funcion f(x)",0ah,0dh,"	2) Funcion en memoria",0ah,0dh,"	3
 Gmenu db "	1) Graficar Original f(x)",0ah,0dh,"	2) Graficar Derivada f'(x)",0ah,0dh,"	3) Graficar Integral F(x)",0ah,0dh,
 				"	4) Regresar",0ah,0dh,"$"
 
+flecha db "	>>","$"
 elegir db "Elija una opcion:","$"
+ingrese_cargar db "INGRESE RUTA DEL ARCHIVO QUE DESEA CARGAR (EJ: C:\Calc.arq)",0ah,0dh,"$"
 asigTerminada db "  Asignacion exitosa. Presione cualquier tecla para continuar.","$"
 PresioneContinuar db "  Presione cualquier tecla para continuar.","$"
 NoExisteFX db "  No se ha ingresado ninguna funcion f(x).",0ah,0dh,"$"
@@ -146,10 +150,13 @@ rep_titulo db "++++++++++++ GENERAR REPORTE ++++++++++++",0ah,0dh,"$"
 graph_titulo db "++++++++++++ GRAFICAR FUNCIONES ++++++++++++",0ah,0dh,"$"
 intervalo_titulo db "++++++++++++ ASIGNAR INTERVALO EN X ++++++++++++",0ah,0dh,"$"
 valorc_titulo db "++++++++++++ ASIGNAR VALOR DE CONSTANTE C ++++++++++++",0ah,0dh,"$"
+titulo_calculadora db "+++++++++++++++++++++ MODO CALCULADORA +++++++++++++++++++++",0ah,0dh,"$"
 ingrese_inicial db "Ingrese el valor inicial del intervalo: ","$"
 ingrese_final db "Ingrese el valor final del intervalo: ","$"
 ingrese_valorc db "Ingrese el valor para la constante C [-99,99]: ","$"
 int_invalido db "Intervalo invalido! Presione cualquier tecla para volver a intentar.",0ah,0dh,"$"
+formato_invalido db "Formato invalido! Presione cualquier tecla para volver a intentar.",0ah,0dh,"$"
+extension_invalida db "Extension invalida! Presione cualquier tecla para volver a intentar.",0ah,0dh,"$"
 Cx0 db "    - Coeficiente de x0: ","$"
 Cx1 db "    - Coeficiente de x1: ","$"
 Cx2 db "    - Coeficiente de x2: ","$"
@@ -343,8 +350,11 @@ OPCION6:
     getCharSE
 	jmp Inicio
 
-OPCION7:	   
-	jmp salir
+OPCION7:
+    	
+    ValidacionRuta
+    getCharSE
+	jmp Inicio
 
 Exito_Abrir:
 	print salto
@@ -368,7 +378,7 @@ Error_Abrir:
 	print salto
 	print errorAbrir
 	getCharSE
-	jmp Inicio
+	jmp OPCION7
 
 Error_Leer:
 	print salto

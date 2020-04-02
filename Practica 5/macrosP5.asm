@@ -1381,3 +1381,100 @@ mov cx,Contador
 cmp cx,ValorMaximo
 jle SeguirPloteando
 endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% VALIDACION RUTA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ValidacionRuta macro
+LOCAL InicioValidacion, CopiarChar, UltimoChar, ErrorFormato, ErrorExtension, VerificacionErrores, LlenarEntrada, VerificarExtension
+InicioValidacion:
+Clear_Screen
+print titulo_calculadora
+print salto
+print ingrese_cargar
+print salto
+print flecha
+LimpiarBuffer bufferAuxiliar, SIZEOF bufferAuxiliar,24h
+LimpiarBuffer bufferAuxiliar2, SIZEOF bufferAuxiliar2,24h
+LimpiarBuffer bufferEntrada, SIZEOF bufferEntrada,24h
+ObtenerRuta bufferAuxiliar
+xor si,si
+CopiarChar:
+mov al,bufferAuxiliar[si]
+mov bufferAuxiliar2[si],al
+inc si
+mov dl,bufferAuxiliar[si]
+cmp dl,00h
+je UltimoChar
+jmp CopiarChar
+
+UltimoChar:
+mov al,bufferAuxiliar[si]
+mov bufferAuxiliar2[si],al
+
+VerificacionErrores:
+cmp bufferAuxiliar2[0000],40h
+jne ErrorFormato
+cmp bufferAuxiliar2[0001],40h
+jne ErrorFormato
+mov cx,si
+dec si
+cmp bufferAuxiliar2[si],40h
+jne ErrorFormato
+dec si
+cmp bufferAuxiliar2[si],40h
+jne ErrorFormato
+
+xor si,si
+mov di,2
+LlenarEntrada:
+mov al,bufferAuxiliar2[di]
+mov bufferEntrada[si],al
+inc di
+inc si
+mov dl,bufferAuxiliar2[di]
+cmp dl,40h
+je UltimoChar2
+jmp LlenarEntrada
+
+UltimoChar2:
+mov al,00h
+mov bufferEntrada[si],al
+
+
+VerificarExtension:
+cmp si,5
+jb ErrorFormato
+mov di,si
+sub di,4
+cmp bufferEntrada[di],2eh
+jne ErrorExtension
+inc di
+cmp bufferEntrada[di],61h
+jne ErrorExtension
+inc di
+cmp bufferEntrada[di],72h
+jne ErrorExtension
+inc di
+cmp bufferEntrada[di],71h
+jne ErrorExtension
+jmp SalirValidacion
+
+ErrorExtension:
+print salto
+print salto
+print extension_invalida
+getCharSE
+jmp InicioValidacion
+
+ErrorFormato:
+print salto
+print salto
+print formato_invalido
+getCharSE
+jmp InicioValidacion
+
+SalirValidacion:
+print bufferEntrada
+endm
