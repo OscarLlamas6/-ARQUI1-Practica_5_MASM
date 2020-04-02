@@ -56,21 +56,25 @@ bufferInformacion db 100 dup('$')
 bufferFechaHora db 15 dup('$')
 bufferDate db 10 dup('$')
 bufferHour db 5 dup('$')
-CoeficienteDx0 WORD 0;
-CoeficienteDx1 WORD 0;
-CoeficienteDx2 WORD 0;
-CoeficienteDx3 WORD 0;
+CoeficienteDx0 WORD 0
+CoeficienteDx1 WORD 0
+CoeficienteDx2 WORD 0
+CoeficienteDx3 WORD 0
 NumeroAux db 100 dup('$')
-Coeficientex0 WORD 0;
-Coeficientex1 WORD 0;
-Coeficientex2 WORD 0;
-Coeficientex3 WORD 0;
-Coeficientex4 WORD 0;
-BanderaFX WORD 0;
-NBytes WORD 0;
-PasoAsignacion WORD 0;
-ValorMinimo WORD 0;
+Coeficientex0 WORD 0
+Coeficientex1 WORD 0
+Coeficientex2 WORD 0
+Coeficientex3 WORD 0
+Coeficientex4 WORD 0
+BanderaFX WORD 0
+NBytes WORD 0
+PasoAsignacion WORD 0
+ValorMinimo WORD 0
 ValorMaximo WORD 0
+Dominio WORD 0
+Contradominio WORD 0
+ResultadoAux WORD 0
+Contador WORD 0;
 Numero1 db 100 dup('$')
 Numero2 db 100 dup('$')
 Resultado db 100 dup('$')
@@ -288,7 +292,10 @@ OPCION5:
     Grafica1:
         AsignarIntervalos
         InicioVideo
+        print salto
+        print fx
         PintarEjes
+        GraphOG
         PausaSalir
         RegresarATexto
         jmp OPCION5

@@ -432,18 +432,35 @@ pop cx
 endm
 
 ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DIBUJAR COORDENADA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+PlotearCoordenada macro valorX, valorY
+xor ax,ax
+mov ax,9fh
+add ax,valorX
+mov Dominio,ax
+mov ax,valorY
+mov bx,1111111111111111b
+mul bx
+add ax,63h
+mov Contradominio,ax
+Pixel Dominio,Contradominio,11
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PINTAR EJES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 PintarEjes macro
 LOCAL ejeX, ejeY
-mov cx,13eh
+mov cx,13eh ;318 = 13eh (LARGO DEL EJE X)
 ejeX:
-	Pixel cx,5fh,2eh
+	Pixel cx,63h,2eh ;63h = 99 (LA MITAD DEL EJE Y)
 	loop ejeX
-	mov cx,0c6h
+	mov cx,0c6h  ;c6h = 198 (LARGO DEL EJE Y)
 ejey:
-	Pixel 9fh,cx,2eh
+	Pixel 9fh,cx,2eh ;9fh = 159 (LA MITAD DEL EJE X)
 	loop ejey
 endm
 
@@ -1156,4 +1173,79 @@ SinSigno:
 	jae InicioValor	
 	mov intervalo,ax
 FinAsignacion:
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% VERIFICAR RESULTADO %%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+VerificarResultado macro
+LOCAL LimitarMinimo, LimitarMaximo, FinVerificacion
+mov ax,ResultadoAux
+cmp ax,63h
+jg LimitarMaximo
+cmp ax,1111111110011101b
+jl LimitarMinimo
+jmp FinVerificacion
+LimitarMaximo:
+mov ax,63h
+mov ResultadoAux,ax
+jmp FinVerificacion
+LimitarMinimo:
+mov ax,1111111110011101b
+mov ResultadoAux,ax
+FinVerificacion:
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% VALUAR ORIGINAL %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ValuarOG macro dom
+mov ax,dom
+mov bx,dom
+mul bx
+mul bx
+mul bx
+mov bx,Coeficientex4
+mul bx
+mov ResultadoAux,ax
+mov ax,dom
+mov bx,dom
+mul bx
+mul bx
+mov bx,Coeficientex3
+mul bx
+add ResultadoAux,ax
+mov ax,dom
+mov bx,dom
+mul bx
+mov bx,Coeficientex2
+mul bx
+add ResultadoAux,ax
+mov ax,dom
+mov bx,Coeficientex1
+mul bx
+add ResultadoAux,ax
+mov ax,Coeficientex0
+add ResultadoAux,ax
+VerificarResultado
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GRAFICAR ORIGINAL %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+GraphOG macro
+LOCAL SeguirPloteando, FinGraphOG
+mov cx,ValorMinimo
+mov Contador,cx
+SeguirPloteando:
+ValuarOG contador
+PlotearCoordenada Contador,ResultadoAux
+inc Contador
+mov cx,Contador
+cmp cx,ValorMaximo
+jle SeguirPloteando
+FinGraphOG:
 endm
