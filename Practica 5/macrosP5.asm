@@ -1293,3 +1293,91 @@ mov cx,Contador
 cmp cx,ValorMaximo
 jle SeguirPloteando
 endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ASIGNAR VALOR C %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+AsignarValorC macro
+clear_Screen
+print valorc_titulo
+print salto
+print ingrese_valorc
+ValorIntervalo ValorC
+print salto
+print asigTerminada
+getCharSE
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% VALUAR INTEGRAL %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ValuarInt macro dom
+mov ax,dom
+mov bx,dom
+mul bx
+mul bx
+mul bx
+mul bx
+mov bx,Coeficientex4
+mul bx
+xor dx,dx
+mov bx,5
+div bx
+mov ResultadoAux,ax
+mov ax,dom
+mov bx,dom
+mul bx
+mul bx
+mul bx
+mov bx,Coeficientex3
+mul bx
+xor dx,dx
+mov bx,4
+div bx
+add ResultadoAux,ax
+mov ax,dom
+mov bx,dom
+mul bx
+mul bx
+mov bx,Coeficientex2
+mul bx
+xor dx,dx
+mov bx,3
+div bx
+add ResultadoAux,ax
+mov ax,dom
+mov bx,dom
+mul bx
+mov bx,Coeficientex1
+mul bx
+xor dx,dx
+mov bx,2
+div bx
+add ResultadoAux,ax
+mov ax,dom
+mov bx,Coeficientex0
+mul bx
+add ResultadoAux,ax
+mov ax,ValorC
+add ResultadoAux,ax
+VerificarResultado
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GRAFICAR INTEGRAL %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+GraphIntx macro
+LOCAL SeguirPloteando
+mov cx,ValorMinimo
+mov Contador,cx
+SeguirPloteando:
+ValuarInt contador
+PlotearCoordenada Contador,ResultadoAux
+inc Contador
+mov cx,Contador
+cmp cx,ValorMaximo
+jle SeguirPloteando
+endm

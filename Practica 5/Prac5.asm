@@ -75,6 +75,7 @@ Dominio WORD 0
 Contradominio WORD 0
 ResultadoAux WORD 0
 Contador WORD 0;
+ValorC WORD 0;
 Numero1 db 100 dup('$')
 Numero2 db 100 dup('$')
 Resultado db 100 dup('$')
@@ -144,8 +145,10 @@ int_titulo db "++++++++++++ Integral F(x) ++++++++++++",0ah,0dh,"$"
 rep_titulo db "++++++++++++ GENERAR REPORTE ++++++++++++",0ah,0dh,"$"
 graph_titulo db "++++++++++++ GRAFICAR FUNCIONES ++++++++++++",0ah,0dh,"$"
 intervalo_titulo db "++++++++++++ ASIGNAR INTERVALO EN X ++++++++++++",0ah,0dh,"$"
+valorc_titulo db "++++++++++++ ASIGNAR VALOR DE CONSTANTE C ++++++++++++",0ah,0dh,"$"
 ingrese_inicial db "Ingrese el valor inicial del intervalo: ","$"
 ingrese_final db "Ingrese el valor final del intervalo: ","$"
+ingrese_valorc db "Ingrese el valor para la constante C [-99,99]: ","$"
 int_invalido db "Intervalo invalido! Presione cualquier tecla para volver a intentar.",0ah,0dh,"$"
 Cx0 db "    - Coeficiente de x0: ","$"
 Cx1 db "    - Coeficiente de x1: ","$"
@@ -313,8 +316,12 @@ OPCION5:
 
     Grafica3:
         AsignarIntervalos
+        AsignarValorC
         InicioVideo
+        print salto
+        print Fint
         PintarEjes
+        GraphIntx
         PausaSalir
         RegresarATexto
         jmp OPCION5
