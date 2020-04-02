@@ -69,12 +69,16 @@ Coeficientex4 WORD 0;
 BanderaFX WORD 0;
 NBytes WORD 0;
 PasoAsignacion WORD 0;
+ValorMinimo WORD 0;
+ValorMaximo WORD 0
 Numero1 db 100 dup('$')
 Numero2 db 100 dup('$')
 Resultado db 100 dup('$')
 Num db 50 dup(00h)
 NumPrint db 100 dup('$')
 Cin db 3 dup('$')
+Cin2 db 5 dup('$')
+CAux db 3 dup('$')
 varCero db 30h,"$$"
 var1P db "1$$"
 var1S db "+1$"
@@ -124,7 +128,7 @@ Gmenu db "	1) Graficar Original f(x)",0ah,0dh,"	2) Graficar Derivada f'(x)",0ah,
 				"	4) Regresar",0ah,0dh,"$"
 
 elegir db "Elija una opcion:","$"
-asigTerminada db "  Asignacion de coeficientes terminada. Presione cualquier tecla para continuar.","$"
+asigTerminada db "  Asignacion exitosa. Presione cualquier tecla para continuar.","$"
 PresioneContinuar db "  Presione cualquier tecla para continuar.","$"
 NoExisteFX db "  No se ha ingresado ninguna funcion f(x).",0ah,0dh,"$"
 SiExisteFX db "  Si ha ingresado funcion f(x).",0ah,0dh,"$"
@@ -135,6 +139,10 @@ dx_titulo db "++++++++++++ Derivada f'(x) ++++++++++++",0ah,0dh,"$"
 int_titulo db "++++++++++++ Integral F(x) ++++++++++++",0ah,0dh,"$"
 rep_titulo db "++++++++++++ GENERAR REPORTE ++++++++++++",0ah,0dh,"$"
 graph_titulo db "++++++++++++ GRAFICAR FUNCIONES ++++++++++++",0ah,0dh,"$"
+intervalo_titulo db "++++++++++++ ASIGNAR INTERVALO EN X ++++++++++++",0ah,0dh,"$"
+ingrese_inicial db "Ingrese el valor inicial del intervalo: ","$"
+ingrese_final db "Ingrese el valor final del intervalo: ","$"
+int_invalido db "Intervalo invalido! Presione cualquier tecla para volver a intentar.",0ah,0dh,"$"
 Cx0 db "    - Coeficiente de x0: ","$"
 Cx1 db "    - Coeficiente de x1: ","$"
 Cx2 db "    - Coeficiente de x2: ","$"
@@ -278,6 +286,7 @@ OPCION5:
     je Inicio
     jmp OPCION5
     Grafica1:
+        AsignarIntervalos
         InicioVideo
         PintarEjes
         PausaSalir
@@ -285,6 +294,7 @@ OPCION5:
         jmp OPCION5
 
     Grafica2:
+        AsignarIntervalos
         InicioVideo
         PintarEjes
         PausaSalir
@@ -292,6 +302,7 @@ OPCION5:
         jmp OPCION5
 
     Grafica3:
+        AsignarIntervalos
         InicioVideo
         PintarEjes
         PausaSalir
@@ -360,7 +371,5 @@ salir:
 	int 21h 				
 
 main endp 	
-
-
 end main
 

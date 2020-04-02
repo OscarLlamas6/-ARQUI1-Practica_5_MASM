@@ -1067,4 +1067,93 @@ NoReporte:
 FinReporte:
 endm
 
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ASIGNAR INTERVALOS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+AsignarIntervalos macro
+LOCAL AsignarMinimo, AsignarMaximo, AsignacionExitosa, InicioAsignacion
+InicioAsignacion:
+clear_Screen
+print intervalo_titulo
+print salto
+print ingrese_inicial
+AsignarMinimo:
+ValorIntervalo ValorMinimo
+print salto
+print ingrese_final
+AsignarMaximo:
+ValorIntervalo ValorMaximo
+mov ax,ValorMinimo
+mov dx,ValorMaximo
+cmp ax,dx
+jl AsignacionExitosa
+print salto
+print int_invalido
+getCharSE
+jmp InicioAsignacion
+AsignacionExitosa:
+print salto
+print asigTerminada
+getCharSE
+endm
+
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% COPIAR ARREGLO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+CopiarArreglo macro BufferFuente, BufferDestino, Start, Finish
+LOCAL Copiar
+LimpiarBuffer BufferDestino, SIZEOF BufferDestino,24h
+mov si, Start
+mov cx,Finish
+xor di,di
+Copiar:
+mov al,BufferFuente[si]
+mov BufferDestino[di],al
+inc si
+inc di
+cmp si,cx
+jb Copiar
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ASIGNAR INTERVALO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ValorIntervalo macro intervalo
+LOCAL InicioValor, PositivoConSigno, Negativo, SinSigno, FinAsignacion
+InicioValor:
+LimpiarBuffer Cin2, SIZEOF Cin2, 24h
+getNumero Cin2
+xor si,si
+mov al,Cin2[si]
+cmp al,2bh
+je PositivoConSigno
+cmp al,2dh
+je Negativo
+jmp SinSigno
+PositivoConSigno:
+	CopiarArreglo Cin2, CAux, 1, SIZEOF Cin2
+	ConvertirAscii CAux
+	cmp ax,64h
+	jae InicioValor
+	mov intervalo,ax
+	jmp FinAsignacion
+Negativo:
+	CopiarArreglo Cin2, CAux, 1, SIZEOF Cin2
+	ConvertirAscii CAux
+	NOT ax
+    add ax,00000001b
+	cmp ax,1111111110011100b
+	jle InicioValor
+	mov intervalo,ax
+	jmp FinAsignacion
+SinSigno:
+	ConvertirAscii Cin2
+	cmp ax,64h
+	jae InicioValor	
+	mov intervalo,ax
+FinAsignacion:
+endm
