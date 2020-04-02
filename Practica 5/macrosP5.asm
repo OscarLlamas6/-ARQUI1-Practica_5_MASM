@@ -1237,7 +1237,7 @@ endm
 ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 GraphOG macro
-LOCAL SeguirPloteando, FinGraphOG
+LOCAL SeguirPloteando
 mov cx,ValorMinimo
 mov Contador,cx
 SeguirPloteando:
@@ -1247,5 +1247,49 @@ inc Contador
 mov cx,Contador
 cmp cx,ValorMaximo
 jle SeguirPloteando
-FinGraphOG:
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% VALUAR DERIVADA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ValuarDx macro dom
+mov ax,dom
+mov bx,dom
+mul bx
+mul bx
+mov bx,CoeficienteDx3
+mul bx
+mov ResultadoAux,ax
+mov ax,dom
+mov bx,dom
+mul bx
+mov bx,CoeficienteDx2
+mul bx
+add ResultadoAux,ax
+mov ax,dom
+mov bx,CoeficienteDx1
+mul bx
+add ResultadoAux,ax
+mov ax,CoeficienteDx0
+add ResultadoAux,ax
+VerificarResultado
+endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GRAFICAR DERIVADA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+GraphDx macro
+LOCAL SeguirPloteando
+mov cx,ValorMinimo
+mov Contador,cx
+CalcularDX
+SeguirPloteando:
+ValuarDx contador
+PlotearCoordenada Contador,ResultadoAux
+inc Contador
+mov cx,Contador
+cmp cx,ValorMaximo
+jle SeguirPloteando
 endm

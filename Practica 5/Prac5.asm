@@ -303,7 +303,10 @@ OPCION5:
     Grafica2:
         AsignarIntervalos
         InicioVideo
+        print salto
+        print fprima
         PintarEjes
+        GraphDx
         PausaSalir
         RegresarATexto
         jmp OPCION5
