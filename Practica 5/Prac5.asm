@@ -118,6 +118,11 @@ encabezado db "	UNIVERSIDAD DE SAN CARLOS DE GUATEMALA",0ah,0dh,"	FACULTAD DE IN
 menu db "	1) Ingresar funcion f(x)",0ah,0dh,"	2) Funcion en memoria",0ah,0dh,"	3) Derivada f'(x)",0ah,0dh,
 				"	4) Integral F(x)",0ah,0dh,"	5) Graficar Funciones",0ah,0dh,"	6) Reporte",0ah,0dh,
 				"	7) Modo Calculadora",0ah,0dh,"	8) Salir",0ah,0dh,"$"
+
+
+Gmenu db "	1) Graficar Original f(x)",0ah,0dh,"	2) Graficar Derivada f'(x)",0ah,0dh,"	3) Graficar Integral F(x)",0ah,0dh,
+				"	4) Regresar",0ah,0dh,"$"
+
 elegir db "Elija una opcion:","$"
 asigTerminada db "  Asignacion de coeficientes terminada. Presione cualquier tecla para continuar.","$"
 PresioneContinuar db "  Presione cualquier tecla para continuar.","$"
@@ -129,6 +134,7 @@ fx_titulo db "++++++++++++ Funcion original f(x) ++++++++++++",0ah,0dh,"$"
 dx_titulo db "++++++++++++ Derivada f'(x) ++++++++++++",0ah,0dh,"$"
 int_titulo db "++++++++++++ Integral F(x) ++++++++++++",0ah,0dh,"$"
 rep_titulo db "++++++++++++ GENERAR REPORTE ++++++++++++",0ah,0dh,"$"
+graph_titulo db "++++++++++++ GRAFICAR FUNCIONES ++++++++++++",0ah,0dh,"$"
 Cx0 db "    - Coeficiente de x0: ","$"
 Cx1 db "    - Coeficiente de x1: ","$"
 Cx2 db "    - Coeficiente de x2: ","$"
@@ -250,8 +256,54 @@ OPCION4:
     getCharSE
 	jmp Inicio
 
-OPCION5:	   
-	jmp salir
+OPCION5:
+    Clear_Screen
+    print graph_titulo
+    print salto
+    mov cx,BanderaFX
+    cmp cx,0
+    je NoFX
+    print elegir
+	print salto
+    print salto
+	print Gmenu
+	getCharSE
+	cmp al,31h			;1
+	je Grafica1
+	cmp al,32h			;2
+    je Grafica2
+    cmp al,33h			;3
+    je Grafica3
+    cmp al,34h			;4
+    je Inicio
+    jmp OPCION5
+    Grafica1:
+        InicioVideo
+        PintarEjes
+        PausaSalir
+        RegresarATexto
+        jmp OPCION5
+
+    Grafica2:
+        InicioVideo
+        PintarEjes
+        PausaSalir
+        RegresarATexto
+        jmp OPCION5
+
+    Grafica3:
+        InicioVideo
+        PintarEjes
+        PausaSalir
+        RegresarATexto
+        jmp OPCION5
+
+    NoFX:
+	    print NoExisteFX
+        print salto
+        print PresioneContinuar
+        getCharSE
+	    jmp Inicio
 
 OPCION6:	   
 	Clear_Screen
