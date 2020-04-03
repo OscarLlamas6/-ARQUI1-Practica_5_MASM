@@ -54,7 +54,8 @@ bufferAuxiliar2 db 50 dup('$'),00
 handlerEntrada dw ?
 bufferReporte db "Reporte.txt",00h
 handlerReporte dw ?
-bufferInformacion db 100 dup('$')
+bufferInformacion db 200 dup('$')
+bufferInfoAux db 200 dup('$')
 bufferFechaHora db 15 dup('$')
 bufferDate db 10 dup('$')
 bufferHour db 5 dup('$')
@@ -115,7 +116,7 @@ var9P db "9$$"
 var9S db "+9$"
 var9N db "-9$"
 salto db " ",0ah,0dh,"$"
-exitoAbrir db "ARCHIVO CARGADO EXITOSAMENTE!",0ah,0dh,"$"
+exitoAbrir db " ARCHIVO CARGADO EXITOSAMENTE!",0ah,0dh,"$"
 exitoGuardar db "ARCHIVO GUARDADO EXITOSAMENTE!",0ah,0dh,"$"
 errorCrear db "ERROR AL CREAR EL ARCHIVO!",0ah,0dh,"$"
 errorAbrir db "ERROR AL CARGAR EL ARCHIVO!",0ah,0dh,"$"
@@ -157,6 +158,9 @@ ingrese_valorc db "Ingrese el valor para la constante C [-99,99]: ","$"
 int_invalido db "Intervalo invalido! Presione cualquier tecla para volver a intentar.",0ah,0dh,"$"
 formato_invalido db "Formato invalido! Presione cualquier tecla para volver a intentar.",0ah,0dh,"$"
 extension_invalida db "Extension invalida! Presione cualquier tecla para volver a intentar.",0ah,0dh,"$"
+error_final db "Falta caracter de finalizacion (;)! Presione cualquier tecla para volver a intentar.",0ah,0dh,"$"
+error_sintactico db "Error sintactico! Presione cualquier tecla para volver a intentar.",0ah,0dh,"$"
+error_caracter db "Caracter invalido: ","$"
 Cx0 db "    - Coeficiente de x0: ","$"
 Cx1 db "    - Coeficiente de x1: ","$"
 Cx2 db "    - Coeficiente de x2: ","$"
@@ -350,17 +354,18 @@ OPCION6:
     getCharSE
 	jmp Inicio
 
-OPCION7:
-    	
+OPCION7:  	
     ValidacionRuta
-    getCharSE
+    AbrirArchivo bufferEntrada, handlerEntrada
+	ContinuarLeer:
+	LimpiarBuffer bufferInformacion, SIZEOF bufferInformacion,24h
+	LeerArchivo handlerEntrada, bufferInformacion, SIZEOF bufferInformacion
+    AnalizarEntrada
+    print salto
+    print bufferInfoAux
+    getCharSE  
 	jmp Inicio
 
-Exito_Abrir:
-	print salto
-	print exitoAbrir
-	getCharSE
-	jmp Inicio
 
 Error_Crear:
 	print salto
@@ -398,5 +403,12 @@ salir:
 	int 21h 				
 
 main endp 	
+
+
+
+
+
+
+
 end main
 

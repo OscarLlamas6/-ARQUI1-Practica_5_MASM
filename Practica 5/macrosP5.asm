@@ -268,7 +268,7 @@ lea dx,buffer
 int 21h
 jc Error_Abrir
 mov handler,ax
-jmp Exito_Abrir
+jmp ContinuarLeer
 endm
 
 ;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1476,5 +1476,100 @@ getCharSE
 jmp InicioValidacion
 
 SalirValidacion:
-print bufferEntrada
 endm
+
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ANALIZAR ENTRADA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+AnalizarEntrada macro
+LOCAL RecorrerEntrada, SeguirInc, VerificarFinal, ErrorFinal, ErrorCaracter, FinAnalisis, Recorrido, GuardarOp, BuscarCaracteresInvalidos, ContinuarBuscando
+ mov cx,1
+ xor si,si
+RecorrerEntrada:
+ cmp bufferInformacion[si],24h
+ je VerificarFinal
+ cmp bufferInformacion[si],24h
+ jne SeguirInc
+SeguirInc:
+ inc si
+ jmp RecorrerEntrada
+VerificarFinal:
+ dec si
+ cmp bufferInformacion[si],3bh
+ jne ErrorFinal
+
+xor di,di
+
+BuscarCaracteresInvalidos:
+mov bx,si
+LimpiarBuffer Resultado,SIZEOF Resultado,24h
+mov si,bx
+mov al,bufferInformacion[di]
+cmp al,30h
+je ContinuarBuscando
+cmp al,31h
+je ContinuarBuscando
+cmp al,32h
+je ContinuarBuscando
+cmp al,33h
+je ContinuarBuscando
+cmp al,34h
+je ContinuarBuscando
+cmp al,35h
+je ContinuarBuscando
+cmp al,36h
+je ContinuarBuscando
+cmp al,37h
+je ContinuarBuscando
+cmp al,38h
+je ContinuarBuscando
+cmp al,39h
+je ContinuarBuscando
+cmp al,2fh
+je ContinuarBuscando
+cmp al,2dh
+je ContinuarBuscando
+cmp al,2bh
+je ContinuarBuscando
+cmp al,2ah
+je ContinuarBuscando
+cmp al,0c4h
+je ContinuarBuscando
+cmp al,20h
+je ContinuarBuscando
+mov Resultado[0000],al
+jmp ErrorCaracter
+
+ContinuarBuscando:
+inc di
+cmp di,si
+jb BuscarCaracteresInvalidos
+mov NBytes,si
+jmp FinAnalisis
+
+ErrorCaracter:
+print salto
+print salto
+print error_caracter
+print Resultado
+print salto
+print salto
+print PresioneContinuar
+getCharSE
+CerrarArchivo handlerEntrada
+jmp OPCION7
+
+ErrorFinal:
+print salto
+print salto
+print error_final
+getCharSE
+CerrarArchivo handlerEntrada
+jmp OPCION7
+FinAnalisis:
+CopiarArreglo bufferInformacion,bufferInfoAux,0,NBytes
+CerrarArchivo handlerEntrada
+endm
+
+
